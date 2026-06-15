@@ -1,4 +1,16 @@
-v2.x.y (work in progress)
+v2.3 (Jun 15, 2026)
+- improvement: Reorganized compressor alias groups by type — ALL is now a composite of LZ /
+               SYMMETRIC / MISC; BWT/PPM codecs (bsc, bzip2, bzip3, ppmd8) moved to SYMMETRIC,
+               and kanzi is split by per-level algorithm between LZ and SYMMETRIC
+- improvement: Added the FASTEST alias (every ALL compressor at only its fastest level) and a
+               new SLOW alias for very slow compressors (glza)
+- improvement: CUDA codecs are now disabled by default and built only with ENABLE_CUDA=1
+- improvement: BSC now handles blocks larger than its input limit by splitting them into chunks
+               (thanks to @flanglet); the codec max input size is a codec property used when sizing buffers
+- improvement: added -mno-strict-align build flag and SNAPPY_HAVE_RVV macro for RISC-V
+               (thanks to @anthony-zy); various platform fixes for 32-bit x86 (lzham), 32-bit ARM,
+               and Windows file size handling
+- fix: account for codec chunk split buffer overhead when allocating the compression buffer
 - added aceapex 1.0 (thanks to @yasha1971-coder)
 - added aceapex_cuda 0.9 — optional CUDA decoder for the aceapex format (thanks to @yasha1971-coder)
 - added memlz 0.2 beta (thanks to @rrrlasse)
