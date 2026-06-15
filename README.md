@@ -91,7 +91,7 @@ Notes column says otherwise.
 | [skim 0.1.0](https://github.com/vantorrewannes/skim) | 2026-06-07 | Linux x86-64 and macOS only — requires the [Zig](https://ziglang.org) compiler |
 | [slz 1.2.2](http://www.libslz.org/) | 2026-04-09 | Compressor only; decompresses via zlib |
 | [snappy 1.2.2](https://github.com/google/snappy) | 2025-03-26 | |
-| [tamp 2.1.0](https://github.com/BrianPugh/tamp) | 2025-03-27 | |
+| [tamp 2.2.4](https://github.com/BrianPugh/tamp) | 2026-06-11 | |
 | [tornado 0.6a](https://encode.su/threads/231-FreeArc-compression-suite-%284x4-Tornado-REP-Delta-Dict-%29) | 2014-03-08 | Disabled on RISC-V (unaligned access) |
 | [ucl 1.03](http://www.oberhumer.com/opensource/ucl/) | 2004-07-20 | |
 | [xz 5.8.3](https://github.com/tukaani-project/xz) | 2026-03-31 | |
