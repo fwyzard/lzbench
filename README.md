@@ -62,7 +62,7 @@ Notes column says otherwise.
 | [aceapex 1.0](https://github.com/yasha1971-coder/aceapex) | 2026-04-24 | |
 | [brieflz 1.3.0](https://github.com/jibsen/brieflz) | 2020-02-15 | |
 | [brotli 1.2.0](https://github.com/google/brotli) | 2025-10-27 | |
-| [bsc 3.3.11](https://github.com/IlyaGrebnov/libbsc) | 2025-08-14 | Disabled on 32-bit ARM — multithreaded decompress faults (SIGBUS, lzbench#293) |
+| [bsc 3.3.12](https://github.com/IlyaGrebnov/libbsc) | 2025-09-10 | Disabled on 32-bit ARM — multithreaded decompress faults (SIGBUS, lzbench#293) |
 | [bzip2 1.0.8](https://www.sourceware.org/bzip2/downloads.html) | 2019-07-13 | |
 | [bzip3 1.5.3](https://github.com/kspalaiologos/bzip3) | 2025-08-13 | |
 | [crush 1.0](https://sourceforge.net/projects/crush/) | 2013-07-01 | |
