@@ -80,7 +80,7 @@ Notes column says otherwise.
 | [lzg 1.0.10](https://github.com/mbitsnbites/liblzg) | 2018-11-29 | |
 | [lzham 1.0](https://github.com/richgel999/lzham_codec) | 2015-01-25 | Disabled on macOS and 32-bit x86 — 64 MB dictionary overflows the 32-bit address space |
 | lzjb 2010 | 2010 | |
-| [lzlib 1.15](http://www.nongnu.org/lzip) | 2025-01-13 | |
+| [lzlib 1.15](https://www.nongnu.org/lzip/lzlib.html) | 2025-01-13 | |
 | [lzma v26.01](http://7-zip.org) | 2026-04-27 | |
 | [lzo 2.10](http://www.oberhumer.com/opensource/lzo) | 2017-03-01 | |
 | [lzsse 2019-04-18 (1847c3e827)](https://github.com/ConorStokes/LZSSE) | 2019-04-18 | 64-bit x86 only — requires SSE4.1 (Windows: MinGW-w64 only); lzsse8fast has a [bug](https://github.com/ConorStokes/LZSSE/issues/14) |
@@ -89,7 +89,7 @@ Notes column says otherwise.
 | [ppmd8 26.01](http://7-zip.org) | 2026-04-27 | |
 | [quicklz 1.5.1 beta 7](https://web.archive.org/web/20160110073818/https://quicklz.com/) | 2011-10-07 | |
 | [skim 0.1.0](https://github.com/vantorrewannes/skim) | 2026-06-07 | Linux x86-64 and macOS only — requires the [Zig](https://ziglang.org) compiler |
-| [slz 1.2.1](http://www.libslz.org/) | 2022-10-23 | Compressor only; decompresses via zlib |
+| [slz 1.2.2](http://www.libslz.org/) | 2026-04-09 | Compressor only; decompresses via zlib |
 | [snappy 1.2.2](https://github.com/google/snappy) | 2025-03-26 | |
 | [tamp 2.1.0](https://github.com/BrianPugh/tamp) | 2025-03-27 | |
 | [tornado 0.6a](https://encode.su/threads/231-FreeArc-compression-suite-%284x4-Tornado-REP-Delta-Dict-%29) | 2014-03-08 | Disabled on RISC-V (unaligned access) |
