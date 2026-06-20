@@ -1027,8 +1027,27 @@ ifeq "$(ENABLE_CUDA)" "1"
     LDFLAGS += -L$(CUDA_BASE)/lib64 -lcudart -Wl,-rpath=$(CUDA_BASE)/lib64
     CUDA_COMPILER = nvcc
     CUDA_CC = $(CUDA_BASE)/bin/nvcc --compiler-bindir $(CXX)
-    CUDA_ARCH = 50 52 60 61 70 75 80 86 89
-    CUDA_CXXFLAGS = -x cu -std=c++14 -O3 $(foreach ARCH, $(CUDA_ARCH), --generate-code=arch=compute_$(ARCH),code=[compute_$(ARCH),sm_$(ARCH)]) --expt-extended-lambda -forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets
+    CUDA_VERSION := $(shell awk '/define *CUDA_VERSION/ { print $$3; exit;}' $(CUDA_BASE)/include/cuda.h)
+    CUDA_ARCH := $(shell \
+      if [ $(CUDA_VERSION) -ge 13000 ]; then \
+	  echo 75 80 86 89 90 100 120; \
+      elif [ $(CUDA_VERSION) -ge 12080 ]; then \
+	  echo 50 52 60 61 70 75 80 86 89 90 100 120; \
+      elif [ $(CUDA_VERSION) -ge 11080 ]; then \
+	  echo 50 52 60 61 70 75 80 86 89 90; \
+      elif [ $(CUDA_VERSION) -ge 11010 ]; then \
+	  echo 50 52 60 61 70 75 80 86; \
+      elif [ $(CUDA_VERSION) -ge 11000 ]; then \
+	  echo 50 52 60 61 70 75 80; \
+      else \
+	  echo 50 52 60 61 70 75; fi)
+    CUDA_CXXSTD := $(shell \
+      if [ $(CUDA_VERSION) -ge 13000 ]; then \
+	  echo c++17; \
+      else \
+	  echo c++14; \
+      fi)
+    CUDA_CXXFLAGS = -x cu -std=$(CUDA_CXXSTD) -O3 $(foreach ARCH, $(CUDA_ARCH), --generate-code=arch=compute_$(ARCH),code=[compute_$(ARCH),sm_$(ARCH)]) --expt-extended-lambda -forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets
 
     ACEAPEX_CUDA_FILES = lz/aceapex/cuda/aceapex_cuda.cu.o lz/aceapex/cuda/aceapex_cuda_lzbench.o
 
