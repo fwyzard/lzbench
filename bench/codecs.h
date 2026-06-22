@@ -417,12 +417,22 @@ int64_t lzbench_memcpy(char *inbuf, size_t insize, char *outbuf, size_t outsize,
 
 
 #ifndef BENCH_REMOVE_OPENZL
-    char* lzbench_openzl_init(size_t insize, size_t level, size_t);
+    char* lzbench_openzl_init_serial(size_t insize, size_t level, size_t);
+    template <typename TInteger>
+    char* lzbench_openzl_init_integer_t(size_t insize, size_t level, size_t windowLog);
+    #define lzbench_openzl_init_integer(TYPE) lzbench_openzl_init_integer_t<TYPE>
+    char* lzbench_openzl_init_generic(size_t insize, size_t level, size_t);
+    char* lzbench_openzl_init_zstd(size_t insize, size_t level, size_t);
+    char* lzbench_openzl_init_lz4(size_t insize, size_t level, size_t);
     void lzbench_openzl_deinit(char* workmem);
     int64_t lzbench_openzl_compress(char *inbuf, size_t insize, char *outbuf, size_t outsize, codec_options_t *codec_options);
     int64_t lzbench_openzl_decompress(char *inbuf, size_t insize, char *outbuf, size_t outsize, codec_options_t *codec_options);
 #else
-    #define lzbench_openzl_init NULL
+    #define lzbench_openzl_init_serial NULL
+    #define lzbench_openzl_init_integer(TYPE) lzbench_openzl_init_integer_t<TYPE>
+    #define lzbench_openzl_init_generic NULL
+    #define lzbench_openzl_init_zstd NULL
+    #define lzbench_openzl_init_lz4 NULL
     #define lzbench_openzl_deinit NULL
     #define lzbench_openzl_compress NULL
     #define lzbench_openzl_decompress NULL
