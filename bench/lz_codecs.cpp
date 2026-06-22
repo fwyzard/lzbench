@@ -1687,7 +1687,7 @@ char* lzbench_openzl_init_generic(size_t insize, size_t level, size_t windowLog)
 
     // ZL_GRAPH_COMPRESS_GENERIC: "default" generic compression suitable for any stream type.
     // Used as a fallback if a compressor does not match the characteristics of the data.
-    // Cujrrently corresponds to Zstd level 6.
+    // Currently corresponds to Zstd level 6.
     ZL_Report report = ZL_Compressor_selectStartingGraphID(params->cgraph, ZL_GRAPH_COMPRESS_GENERIC);
     if (ZL_isError(report)) {
       printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));

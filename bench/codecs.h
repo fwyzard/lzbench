@@ -429,7 +429,7 @@ int64_t lzbench_memcpy(char *inbuf, size_t insize, char *outbuf, size_t outsize,
     int64_t lzbench_openzl_decompress(char *inbuf, size_t insize, char *outbuf, size_t outsize, codec_options_t *codec_options);
 #else
     #define lzbench_openzl_init_serial NULL
-    #define lzbench_openzl_init_integer(TYPE) lzbench_openzl_init_integer_t<TYPE>
+    #define lzbench_openzl_init_integer(TYPE) NULL
     #define lzbench_openzl_init_generic NULL
     #define lzbench_openzl_init_zstd NULL
     #define lzbench_openzl_init_lz4 NULL
