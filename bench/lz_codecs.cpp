@@ -1656,7 +1656,7 @@ char* lzbench_openzl_init_integer_t(size_t insize, size_t level, size_t windowLo
     // Build a graph to compress signed or unsigned integers (Little Endian).
     // Adapted from OpenZL buildIntProfile() source code in cli/utils/compress_profiles.cpp .
     ZL_GraphID graph = ZL_GRAPH_FIELD_LZ;
-    if constexpr(std::is_signed_v<TInteger>) {
+    if (std::is_signed<TInteger>::value) {
         graph = ZL_Compressor_registerStaticGraph_fromNode1o(params->cgraph, ZL_NODE_ZIGZAG, graph);
     }
     graph = ZL_Compressor_registerStaticGraph_fromNode1o(params->cgraph, ZL_Node_interpretAsLE(8*sizeof(TInteger)), graph);
