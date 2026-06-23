@@ -1602,8 +1602,9 @@ int64_t lzbench_zling_decompress(char *inbuf, size_t insize, char *outbuf, size_
 
 #ifndef BENCH_REMOVE_OPENZL
 #include <openzl/openzl.h>
+#include <openzl/codecs/zl_segmenters.h>
 
-/* The format version used when compressing in the example.  */
+// The OpenZL format version used for the compression in lzbench
 #define LZBENCH_OPENZL_FORMAT_VERSION 24
 
 typedef struct {
@@ -1612,7 +1613,7 @@ typedef struct {
     ZL_DCtx* dctx;
 } openzl_params_s;
 
-char* lzbench_openzl_init(size_t insize, size_t level, size_t windowLog)
+static char* lzbench_openzl_init_base(size_t insize, size_t level, size_t windowLog)
 {
     openzl_params_s* params = (openzl_params_s*) malloc(sizeof(openzl_params_s));
 
@@ -1629,7 +1630,105 @@ char* lzbench_openzl_init(size_t insize, size_t level, size_t windowLog)
       abort();
     }
 
-    report = ZL_Compressor_selectStartingGraphID(params->cgraph, ZL_GRAPH_LZ);
+    return (char*) params;
+}
+
+char* lzbench_openzl_init_serial(size_t insize, size_t level, size_t windowLog)
+{
+    openzl_params_s* params = (openzl_params_s*) lzbench_openzl_init_base(insize, level, windowLog);
+
+    // ZL_GRAPH_LZ: standard graph for LZ compression, offer performance similar to Zstd.
+    // Used for serial data (aka raw bytes).
+    ZL_Report report = ZL_Compressor_selectStartingGraphID(params->cgraph, ZL_GRAPH_LZ);
+    if (ZL_isError(report)) {
+      printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
+      abort();
+    }
+
+    return (char*) params;
+}
+
+template <typename TInteger>
+char* lzbench_openzl_init_integer_t(size_t insize, size_t level, size_t windowLog)
+{
+    openzl_params_s* params = (openzl_params_s*) lzbench_openzl_init_base(insize, level, windowLog);
+
+    // Build a graph to compress signed or unsigned integers (Little Endian).
+    // Adapted from OpenZL buildIntProfile() source code in cli/utils/compress_profiles.cpp .
+    ZL_GraphID graph = ZL_GRAPH_FIELD_LZ;
+    if (std::is_signed<TInteger>::value) {
+        graph = ZL_Compressor_registerStaticGraph_fromNode1o(params->cgraph, ZL_NODE_ZIGZAG, graph);
+    }
+    graph = ZL_Compressor_registerStaticGraph_fromNode1o(params->cgraph, ZL_Node_interpretAsLE(8*sizeof(TInteger)), graph);
+    graph = ZL_Compressor_buildNumFromSerialSegmenter(params->cgraph, sizeof(TInteger), 0, graph);
+
+    ZL_Report report = ZL_Compressor_selectStartingGraphID(params->cgraph, graph);
+    if (ZL_isError(report)) {
+      printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
+      abort();
+    }
+
+    return (char*) params;
+}
+
+// Explicit definition of the template specialisations referenced in lzbench.h comp_desc[].
+template char* lzbench_openzl_init_integer_t<uint8_t>(size_t insize, size_t level, size_t windowLog);
+template char* lzbench_openzl_init_integer_t<int8_t>(size_t insize, size_t level, size_t windowLog);
+template char* lzbench_openzl_init_integer_t<uint16_t>(size_t insize, size_t level, size_t windowLog);
+template char* lzbench_openzl_init_integer_t<int16_t>(size_t insize, size_t level, size_t windowLog);
+template char* lzbench_openzl_init_integer_t<uint32_t>(size_t insize, size_t level, size_t windowLog);
+template char* lzbench_openzl_init_integer_t<int32_t>(size_t insize, size_t level, size_t windowLog);
+template char* lzbench_openzl_init_integer_t<uint64_t>(size_t insize, size_t level, size_t windowLog);
+template char* lzbench_openzl_init_integer_t<int64_t>(size_t insize, size_t level, size_t windowLog);
+
+char* lzbench_openzl_init_generic(size_t insize, size_t level, size_t windowLog)
+{
+    openzl_params_s* params = (openzl_params_s*) lzbench_openzl_init_base(insize, level, windowLog);
+
+    // ZL_GRAPH_COMPRESS_GENERIC: "default" generic compression suitable for any stream type.
+    // Used as a fallback if a compressor does not match the characteristics of the data.
+    // Currently corresponds to Zstd level 6.
+    ZL_Report report = ZL_Compressor_selectStartingGraphID(params->cgraph, ZL_GRAPH_COMPRESS_GENERIC);
+    if (ZL_isError(report)) {
+      printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
+      abort();
+    }
+
+    return (char*) params;
+}
+
+char* lzbench_openzl_init_zstd(size_t insize, size_t level, size_t windowLog)
+{
+    openzl_params_s* params = (openzl_params_s*) lzbench_openzl_init_base(insize, level, windowLog);
+
+    // ZL_GRAPH_ZSTD: Zstd compression.
+    ZL_Report report = ZL_Compressor_selectStartingGraphID(params->cgraph, ZL_GRAPH_ZSTD);
+    if (ZL_isError(report)) {
+      printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
+      abort();
+    }
+
+    report = ZL_Compressor_setParameter(params->cgraph, ZL_CParam_compressionLevel, level);
+    if (ZL_isError(report)) {
+      printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
+      abort();
+    }
+
+    return (char*) params;
+}
+
+char* lzbench_openzl_init_lz4(size_t insize, size_t level, size_t windowLog)
+{
+    openzl_params_s* params = (openzl_params_s*) lzbench_openzl_init_base(insize, level, windowLog);
+
+    // ZL_GRAPH_LZ4: LZ4 compression.
+    ZL_Report report = ZL_Compressor_selectStartingGraphID(params->cgraph, ZL_GRAPH_LZ4);
+    if (ZL_isError(report)) {
+      printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
+      abort();
+    }
+
+    report = ZL_Compressor_setParameter(params->cgraph, ZL_CParam_compressionLevel, level);
     if (ZL_isError(report)) {
       printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
       abort();
