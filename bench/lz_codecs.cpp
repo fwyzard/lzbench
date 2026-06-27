@@ -1708,6 +1708,8 @@ char* lzbench_openzl_init_zstd(size_t insize, size_t level, size_t windowLog)
       abort();
     }
 
+    // Valid compression levels range from -99 (?) to -1 and from 1 to 22.
+    // Level 0 requests the default behaviour, which corresponds to level 6.
     report = ZL_Compressor_setParameter(params->cgraph, ZL_CParam_compressionLevel, level);
     if (ZL_isError(report)) {
       printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
@@ -1728,6 +1730,8 @@ char* lzbench_openzl_init_lz4(size_t insize, size_t level, size_t windowLog)
       abort();
     }
 
+    // Valid compression levels range from -99 (?) to -1 and from 1 to 12.
+    // Level 0 requests the default behaviour, which corresponds to level 6.
     report = ZL_Compressor_setParameter(params->cgraph, ZL_CParam_compressionLevel, level);
     if (ZL_isError(report)) {
       printf("OpenZL initialisation error: %s\n", ZL_Compressor_getErrorContextString(params->cgraph, report));
